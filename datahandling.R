@@ -316,6 +316,8 @@ queryDate_intervalSum <- function(gaugeData,fromDate,toDate) {
 generateCleantable <- function(gauges) {
   # Produce a clean version of the gauges dataframe for the table display
   cleantable <- gauges %>%
+    mutate_at(c("latitude","longitude"), funs(round(., 3))) %>%
+    mutate_at(c("last_hour","rain_today","total_rainfall"), funs(round(., 1))) %>%
     select(Gauge = sitenumber,
       Name = sitename,
       Catchment = river,
@@ -328,7 +330,7 @@ generateCleantable <- function(gauges) {
       Altitude = altitude,
       Lat = latitude,
       Lon = longitude
-    )
+    ) 
   
   return(cleantable)
 }

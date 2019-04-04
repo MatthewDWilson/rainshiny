@@ -52,7 +52,7 @@ set.seed(seed = NULL)
 
 aboutText <- 
   "<h3>Rainshiny</h3>
-  <p>Version 0.1 (3-Apr-2019)</p>
+  <p>Version 0.1.1 (4-Apr-2019)</p>
   <p>R Shiny app which demonstrates near-real time statistical analysis of rain gauge data.</p>
   <p>This app is available for download under the MIT license from Github at <a href=/'https://github.com/MatthewDWilson/rainshiny/'>https://github.com/MatthewDWilson/rainshiny</a>
   <h4>Data providers</h4>
@@ -66,6 +66,8 @@ aboutText <-
     <li>0.1   : 2019-04-03 : Initial Beta release</li>
   </ul>
 "
+# Minor updates:
+# 0.1.1: 4/4/2019 - added return periods to popup; changed values to 2 d.p.
 
 # Connect to the Postgres database
 # Edit for production env:
@@ -229,7 +231,7 @@ server <- function(input, output, session) {
   rv <- reactiveValues(data = rain$gauges, 
                        dataAll = rain$gauges, 
                        cleantable = generateCleantable(rain$gauges))
-  
+
   ## Cross-match the date selection on the map and data table tables
   cur_val <- ""
   observe({
@@ -394,9 +396,9 @@ server <- function(input, output, session) {
       tags$br(),
       sprintf("Date: %s", input$selectedDate), 
       tags$br(),
-      sprintf("Rain previous 24 hours: %s mm", selectedGauge$rain_today), 
+      sprintf("Rain previous 24 hours: %.2f mm (%.2f yr)", selectedGauge$rain_today, selectedGauge$rain_today_prob), 
       tags$br(),
-      sprintf("Rain previous 7 days: %s mm", selectedGauge$total_rainfall)
+      sprintf("Rain previous 7 days: %.2f mm (%.2f yr)", selectedGauge$total_rainfall, selectedGauge$total_rainfall_prob)
     ))
     leafletProxy("map") %>% addPopups(lng, lat, content, layerId = sitenumber)
   }
